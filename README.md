@@ -1,6 +1,6 @@
 # Project ASSET：爆學力自主學習授課工具集
 ASSET = Atom SkooL SDL Empowerment Toolkit
-  ．Atom SkooL ＝ 爆學力
+*   **Atom SkooL ＝ 爆學力**
   ．SDL (Self-Directed Learning) ＝ 自主學習
   ．Empowerment ＝ 教學賦能（或 增能，指為老師裝備更強的教學戰力）
   ．Toolkit ＝ 工具集（或 工具箱）
