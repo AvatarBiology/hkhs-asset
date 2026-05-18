@@ -4,6 +4,7 @@ ASSET = Atom SkooL SDL Empowerment Toolkit
 *   **SDL (Self-Directed Learning) ＝ 自主學習**
 *   **Empowerment ＝ 教學賦能（或增能，希望為老師裝備更強的教學戰力）
 *   **Toolkit ＝ 工具集（或 工具箱）**
+
 這是一個專屬HKHS（湖口高中）自主學習與學習歷程檔案的教學工具匯總平台。以「爆學力」教材為核心骨幹，結合 AI 工具，幫助教師減輕陪伴與檢核的負擔，同時引發學生的學習動機。
 
 ## 專案特色
