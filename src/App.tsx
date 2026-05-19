@@ -42,7 +42,12 @@ export default function App() {
             <p className="text-slate-500 font-medium mt-1 text-sm md:text-base">教學引導、評量回饋工具集</p>
           </div>
           <div className="hidden md:flex flex-col items-end gap-1">
-            <div className="w-12 h-12 md:w-14 md:h-14 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-white shadow-inner italic text-xl md:text-2xl">A+</div>
+            <img 
+              src="https://i.meee.com.tw/ieTLxGR.png" 
+              alt="Logo" 
+              referrerPolicy="no-referrer"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover shadow-sm bg-white border-2 border-yellow-400" 
+            />
           </div>
         </div>
       </header>
