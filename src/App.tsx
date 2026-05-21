@@ -9,6 +9,8 @@ import {
   GraduationCap,
   Info,
   Presentation,
+  SlidersHorizontal,
+  X
 } from 'lucide-react';
 import { toolsData, ToolType, Audience, Category } from './data';
 
@@ -16,6 +18,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<Category | 'All'>('All');
   const [activeAudience, setActiveAudience] = useState<Audience | 'All'>('All');
   const [activeType, setActiveType] = useState<ToolType | 'All'>('All');
+  const [isFilterOpen, setIsFilterOpen] = useState(() => window.innerWidth >= 768);
 
   const filteredTools = toolsData.filter((tool) => {
     if (activeCategory !== 'All' && tool.category !== activeCategory) return false;
@@ -53,36 +56,67 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden max-w-7xl mx-auto w-full">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden max-w-7xl mx-auto w-full relative">
+        
+        {/* Mobile Filter Overlay Backdrop */}
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsFilterOpen(false)}
+              className="md:hidden absolute inset-0 bg-slate-900/20 backdrop-blur-sm z-20"
+            />
+          )}
+        </AnimatePresence>
+
         {/* Sidebar / Filter Panel */}
-        <aside className="w-full md:w-64 lg:w-72 bg-white/60 backdrop-blur-md p-5 md:p-6 border-b md:border-b-0 md:border-r border-sky-100 shrink-0 md:overflow-y-auto max-h-[35vh] md:max-h-full overflow-y-auto">
-          <div className="space-y-6 md:space-y-8">
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.aside 
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+              className="absolute md:relative z-30 w-4/5 sm:w-80 md:w-64 lg:w-72 bg-white md:bg-white/60 backdrop-blur-md shadow-2xl md:shadow-none border-r border-sky-100 shrink-0 h-full flex flex-col"
+            >
+              <div className="p-5 md:p-6 flex-1 overflow-y-auto space-y-6 md:space-y-8">
+                <div className="flex justify-between items-center md:hidden mb-2">
+                  <h2 className="font-bold text-slate-800 text-lg">篩選條件</h2>
+                  <button onClick={() => setIsFilterOpen(false)} className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-500 transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
             {/* 學習階段 (Category) */}
             <div>
               <h3 className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3 md:mb-4">主要階段</h3>
-              <div className="flex flex-col sm:flex-row md:flex-col gap-2">
-                <VerticalFilterButton
-                  label="全部"
+              <div className="flex flex-wrap gap-2">
+                <PillFilterButton
+                  label="All"
                   isActive={activeCategory === 'All'}
                   onClick={() => setActiveCategory('All')}
+                  baseColor="slate"
                 />
-                <VerticalFilterButton
+                <PillFilterButton
                   label="自主學習"
                   isActive={activeCategory === '自主學習引導與回饋'}
                   onClick={() => setActiveCategory('自主學習引導與回饋')}
+                  baseColor="emerald"
                 />
-                <VerticalFilterButton
+                <PillFilterButton
                   label="學習歷程檔案"
                   isActive={activeCategory === '學習歷程檔案撰寫與回饋'}
                   onClick={() => setActiveCategory('學習歷程檔案撰寫與回饋')}
+                  baseColor="amber"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-1 gap-6 md:gap-8">
-              {/* 對象篩選 (Audience) */}
-              <div>
-                <h3 className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3 md:mb-4">對象篩選</h3>
+            {/* 對象篩選 (Audience) */}
+            <div>
+              <h3 className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3 md:mb-4">對象篩選</h3>
                 <div className="flex flex-wrap gap-2">
                   <PillFilterButton
                     label="All"
@@ -135,7 +169,6 @@ export default function App() {
                   />
                 </div>
               </div>
-            </div>
             
             {(activeCategory !== 'All' || activeAudience !== 'All' || activeType !== 'All') && (
               <div className="pt-2 md:pt-4 border-t border-slate-200">
@@ -148,12 +181,22 @@ export default function App() {
                 </button>
               </div>
             )}
-          </div>
-        </aside>
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
 
         {/* Cards Grid */}
-        <main className="flex-1 p-5 md:p-8 overflow-y-auto">
-          <div className="mb-4 md:mb-6 flex justify-between items-center text-slate-500 text-sm">
+        <main className="flex-1 p-5 md:p-8 overflow-y-auto flex flex-col">
+          <div className="mb-4 md:mb-6 flex justify-between items-center text-slate-500 text-sm shrink-0">
+            <button 
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 hover:border-slate-300 text-slate-700 font-bold transition-all active:scale-95"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-blue-600" />
+              <span className="hidden sm:inline">{isFilterOpen ? '隱藏篩選' : '展開篩選'}</span>
+              <span className="sm:hidden">篩選</span>
+            </button>
             <p className="font-medium">共找到 <span className="font-bold text-blue-600 px-1 text-base">{filteredTools.length}</span> 個工具</p>
           </div>
 
@@ -197,22 +240,7 @@ export default function App() {
 
 // Subcomponents
 
-function VerticalFilterButton({ label, isActive, onClick }: { label: string, isActive: boolean, onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full text-left px-4 py-2 md:py-2.5 rounded-xl transition-all duration-200 text-sm md:text-base ${
-        isActive
-          ? 'bg-white border-2 border-blue-500 text-blue-600 font-bold shadow-sm'
-          : 'bg-white/40 border-2 border-transparent text-slate-600 hover:border-blue-300 hover:bg-white'
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function PillFilterButton({ label, isActive, onClick, baseColor }: { label: string, isActive: boolean, onClick: () => void, baseColor: 'slate' | 'purple' | 'blue' | 'green' | 'fuchsia' | 'sky' }) {
+function PillFilterButton({ label, isActive, onClick, baseColor }: { label: string, isActive: boolean, onClick: () => void, baseColor: 'slate' | 'purple' | 'blue' | 'green' | 'fuchsia' | 'sky' | 'emerald' | 'amber' }) {
   const getColors = () => {
     switch (baseColor) {
       case 'purple':
@@ -225,6 +253,10 @@ function PillFilterButton({ label, isActive, onClick, baseColor }: { label: stri
         return isActive ? 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200 shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:border-fuchsia-300';
       case 'sky':
         return isActive ? 'bg-sky-100 text-sky-700 border-sky-200 shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:border-sky-300';
+      case 'emerald':
+        return isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200 shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:border-emerald-300';
+      case 'amber':
+        return isActive ? 'bg-amber-100 text-amber-700 border-amber-200 shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:border-amber-300';
       default:
         return isActive ? 'bg-slate-800 text-white border-slate-800 shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300';
     }
